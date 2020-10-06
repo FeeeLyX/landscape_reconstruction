@@ -165,27 +165,31 @@ def scan():
     return xc,yc,zc
 	
 # main
-x = np.ndarray(0, np.int16)
-y = np.ndarray(0, np.int16)
-z = np.ndarray(0)
+def main():
+  x = np.ndarray(0, np.int16)
+  y = np.ndarray(0, np.int16)
+  z = np.ndarray(0)
 
-xn, yn, zn = scan()
-x, y, z = update(x,y,z, xn,yn,zn, 0,0,0, 0,0,0)
-x, y, z = keep_only_surface_points(x, y, z)
+  xn, yn, zn = scan()
+  x, y, z = update(x,y,z, xn,yn,zn, 0,0,0, 0,0,0)
+  x, y, z = keep_only_surface_points(x, y, z)
 
-x, y, z = update(x,y,z, xn,yn, zn, 10,20,-90, -70,0,0)
-x, y, z = keep_only_surface_points(x, y, z)
+  x, y, z = update(x,y,z, xn,yn, zn, 10,20,-90, -70,0,0)
+  x, y, z = keep_only_surface_points(x, y, z)
 
-visualize(x,y,z)
+  visualize(x,y,z)
 
-# making relief for output
-size = 25
-relief = np.zeros((2*size+1,2*size+1))-32768
-for i in range(len(x)):
+  # making relief for output
+  size = 25
+  relief = np.zeros((2*size+1,2*size+1))-32768
+  for i in range(len(x)):
     if (abs(x[i])<=size) and (abs(y[i])<=size):
-        relief[y[i]+size][x[i]+size] = z[i]
-relief[relief==-32768] = -15
+      relief[y[i]+size][x[i]+size] = z[i]
+  relief[relief==-32768] = -15
 
-# smoothing
-kernel = np.ones((5,5),np.int16)/25
-relief = cv.filter2D(relief,-1,kernel)
+  # smoothing
+  kernel = np.ones((5,5),np.int16)/25
+  relief = cv.filter2D(relief,-1,kernel)
+
+if __name__ == "__main__":
+  main()
